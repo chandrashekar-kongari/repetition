@@ -1,8 +1,8 @@
 import { router } from "@/lib/trpc";
-import { tasksRouter } from "./tasks";
+import { resourcesRouter } from "./resources";
 
 export const appRouter = router({
-  tasks: tasksRouter,
+  resources: resourcesRouter,
 });
 
 export type AppRouter = typeof appRouter;

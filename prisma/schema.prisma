@@ -13,10 +13,20 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+enum Status {
+  TO_READ
+  RE_READ
+  COMPLETED
+}
+
 model resource {
   id        String   @id @default(uuid())
-  link      String   @unique
-  notes     String?
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  link      String?
+  content   String
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+  deleted_at DateTime?
+  email    String
+  status   Status   @default(TO_READ)
+  order    Int      @default(0)
 }

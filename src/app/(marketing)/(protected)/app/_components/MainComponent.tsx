@@ -1,117 +1,114 @@
 "use client";
-import { Circle, CircleDashedIcon, CircleDotIcon, Disc2 } from "lucide-react";
-import { useState, useMemo } from "react";
-import { useEditor, EditorContent } from "@tiptap/react";
-import StarterKit from "@tiptap/starter-kit";
-import Link from "@tiptap/extension-link";
 
-export interface status {
-  toRead: {
-    label: string;
-    icon: React.ReactNode;
-    id: string;
-  };
-  reRead: {
-    label: string;
-    icon: React.ReactNode;
-    id: string;
-  };
-  completed: {
-    label: string;
-    icon: React.ReactNode;
-    id: string;
-  };
-}
+import { Circle, CircleDashedIcon, Disc2 } from "lucide-react";
+import { useState, useMemo, useEffect } from "react";
 
-const TiptapEditor = ({ content }: { content: string }) => {
-  // Function to convert URLs in text to HTML links
-  const processContent = (text: string) => {
-    const urlRegex = /(https?:\/\/[^\s]+)/g;
-    return text.replace(
-      urlRegex,
-      '<a href="$1" target="_blank" rel="noopener noreferrer">$1</a>'
-    );
-  };
-
-  const editor = useEditor({
-    extensions: [
-      StarterKit,
-      Link.configure({
-        openOnClick: true,
-        autolink: true,
-        linkOnPaste: true,
-        HTMLAttributes: {
-          class: "underline cursor-pointer font-medium text-foreground",
-        },
-        protocols: ["http", "https", "mailto"],
-      }),
-    ],
-    content: processContent(content),
-    editable: true,
-    editorProps: {
-      attributes: {
-        class:
-          "w-full min-h-[32px] border-b bg-transparent text-base focus:outline-none focus:ring-0 focus-visible:ring-0 px-1 cursor-text",
-      },
-    },
-  });
-
-  return <EditorContent editor={editor} />;
-};
+import StatusSection from "./StatusSection";
+import { trpc } from "@/lib/trpc-client";
+import { resource, Status } from "@prisma/client";
 
 const MainComponent = () => {
-  const status = useMemo<status>(
+  const { data: resources, isLoading } = trpc.resources.list.useQuery(
+    undefined,
+    {
+      enabled: typeof window !== "undefined",
+      retry: false,
+    }
+  );
+
+  const statusConfig = useMemo(
     () => ({
       toRead: {
+        id: "toRead",
+        content: "",
+        status: Status.TO_READ,
+        order: 0,
+        email: "",
+        link: null,
+        created_at: new Date(),
+        updated_at: new Date(),
+        deleted_at: null,
         label: "To Read",
         icon: <CircleDashedIcon className="w-4 h-4 text-muted-foreground" />,
-        id: "toRead",
       },
       reRead: {
+        id: "reRead",
+        content: "",
+        status: Status.RE_READ,
+        order: 0,
+        email: "",
+        link: null,
+        created_at: new Date(),
+        updated_at: new Date(),
+        deleted_at: null,
         label: "Re-Read",
         icon: <Disc2 className="w-4 h-4 text-muted-foreground" />,
-        id: "reRead",
       },
       completed: {
+        id: "completed",
+        content: "",
+        status: Status.COMPLETED,
+        order: 0,
+        email: "",
+        link: null,
+        created_at: new Date(),
+        updated_at: new Date(),
+        deleted_at: null,
         label: "Completed ",
         icon: (
           <Circle className="w-4 h-4 text-muted-foreground fill-muted-foreground" />
         ),
-        id: "completed",
       },
     }),
     []
   );
+
+  const [toRead, setToRead] = useState<resource[] | undefined>(undefined);
+  const [reRead, setReRead] = useState<resource[] | undefined>(undefined);
+  const [completed, setCompleted] = useState<resource[] | undefined>(undefined);
+
+  useEffect(() => {
+    if (resources) {
+      setToRead(
+        resources.filter((resource) => resource.status === Status.TO_READ)
+      );
+      setReRead(
+        resources.filter((resource) => resource.status === Status.RE_READ)
+      );
+      setCompleted(
+        resources.filter((resource) => resource.status === Status.COMPLETED)
+      );
+    }
+  }, [resources]);
+
+  // Handle loading state
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center min-h-[400px]">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-32 w-32 border-b-2 mx-auto"></div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="flex flex-col items-center gap-4 w-full max-w-7xl mx-auto pt-10">
-      {Object.entries(status).map(([key, value]) => (
-        <div
-          key={key}
-          className="flex flex-col gap-2 md:w-xl w-full text-left justify-start p-4"
-        >
-          <div className="py-2 px-4 flex items-center gap-1 text-muted-foreground">
-            {value.icon}
-            <h1 className="text-lg font-bold">{value.label}</h1>
-          </div>
-          <div className="flex flex-col gap-4">
-            <div className="flex flex-row items-start gap-2 px-4 group">
-              <div className="flex items-start justify-center pt-1">
-                {value.icon}
-              </div>
-              <TiptapEditor content={value.label} />
-            </div>
-
-            {key !== "completed" && (
-              <div className="flex flex-row items-start gap-2 px-4 group">
-                <div className="flex items-start justify-center pt-1">
-                  {value.icon}
-                </div>
-                <TiptapEditor content="link 2 https://console.neon.tech/app/p" />
-              </div>
-            )}
-          </div>
-        </div>
-      ))}
+      <StatusSection
+        statusConfig={statusConfig.toRead}
+        items={toRead || []}
+        showAddNew={true}
+      />
+      <StatusSection
+        statusConfig={statusConfig.reRead}
+        items={reRead || []}
+        showAddNew={true}
+      />
+      <StatusSection
+        statusConfig={statusConfig.completed}
+        items={completed || []}
+        showAddNew={false}
+      />
     </div>
   );
 };

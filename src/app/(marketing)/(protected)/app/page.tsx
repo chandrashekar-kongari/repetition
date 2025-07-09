@@ -1,16 +1,10 @@
 import { stackServerApp } from "@/stack";
-import MainComponent from "./_components/MainComponent";
-import UserSettings from "./_components/UserSettings";
+import ClientWrapper from "./_components/ClientWrapper";
 
 const App = async () => {
   await stackServerApp.getUser({ or: "redirect" });
 
-  return (
-    <div>
-      <MainComponent />
-      <UserSettings />
-    </div>
-  );
+  return <ClientWrapper />;
 };
 
 export default App;
