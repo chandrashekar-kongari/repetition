@@ -99,4 +99,28 @@ export const resourcesRouter = router({
 
       return { success: true };
     }),
+
+  delete: protectedProcedure
+    .input(
+      z.object({
+        id: z.string(),
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      const userEmail =
+        ctx.user.primaryEmail || ctx.user.displayName || "unknown";
+
+      const resource = await prisma.resource.updateMany({
+        where: {
+          id: input.id,
+          email: userEmail,
+          deleted_at: null,
+        },
+        data: {
+          deleted_at: new Date(),
+        },
+      });
+
+      return { success: true };
+    }),
 });

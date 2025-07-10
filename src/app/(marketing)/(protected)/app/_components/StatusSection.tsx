@@ -20,7 +20,7 @@ import {
 } from "@dnd-kit/sortable";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-import { Circle, CircleDashedIcon, Disc2 } from "lucide-react";
+import { Circle, CircleDashedIcon, Disc2, Trash2 } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -54,6 +54,7 @@ const SortableItem = ({
   currentStatus,
   onUpdate,
   onStatusChange,
+  onDelete,
   onBlur,
   onFocus,
 }: {
@@ -63,6 +64,7 @@ const SortableItem = ({
   currentStatus: Status;
   onUpdate: (content: string) => void;
   onStatusChange: (status: Status) => void;
+  onDelete: () => void;
   onBlur: () => void;
   onFocus: () => void;
 }) => {
@@ -82,6 +84,8 @@ const SortableItem = ({
     zIndex: isDragging ? 1000 : 0,
   };
 
+  const [isHovered, setIsHovered] = useState(false);
+
   return (
     <div
       ref={setNodeRef}
@@ -89,7 +93,7 @@ const SortableItem = ({
       className="flex flex-row items-start gap-2 px-4 group"
     >
       <div className="flex items-start justify-center pt-1">
-        <DropdownMenu>
+        <DropdownMenu open={isHovered && !isDragging}>
           <DropdownMenuTrigger asChild>
             <button
               className="flex items-center justify-center hover:bg-accent hover:text-accent-foreground rounded-sm p-1 transition-colors cursor-grab active:cursor-grabbing"
@@ -98,11 +102,13 @@ const SortableItem = ({
               onClick={(e) => {
                 e.stopPropagation();
               }}
+              onMouseEnter={() => setIsHovered(true)}
+              onMouseLeave={() => setIsHovered(false)}
             >
               {icon}
             </button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent align="start">
+          <DropdownMenuContent align="start" side="left">
             {Object.entries(statusConfigs).map(([status, config]) => (
               <DropdownMenuItem
                 key={status}
@@ -115,6 +121,12 @@ const SortableItem = ({
                 </div>
               </DropdownMenuItem>
             ))}
+            <DropdownMenuItem key={"delete"} onClick={onDelete} className={""}>
+              <div className="flex items-center gap-2">
+                <Trash2 className="w-4 h-4 text-muted-foreground" />
+                <span>Delete</span>
+              </div>
+            </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       </div>
@@ -123,6 +135,124 @@ const SortableItem = ({
         onUpdate={onUpdate}
         onBlur={onBlur}
         onFocus={onFocus}
+      />
+    </div>
+  );
+};
+
+const NewResourceItem = ({
+  item,
+  index,
+  statusConfig,
+  statusConfigs,
+  updateResource,
+  deleteResource,
+  handleUpdate,
+  setNewResources,
+  setCurrentNewIndex,
+}: {
+  item: {
+    id: string;
+    content: string;
+    status: Status;
+    order: number;
+  };
+  index: number;
+  statusConfig: { status: Status; icon: React.ReactNode };
+  statusConfigs: Record<Status, { label: string; icon: React.ReactNode }>;
+  updateResource: any;
+  deleteResource: any;
+  handleUpdate: (id: string, content: string) => void;
+  setNewResources: React.Dispatch<React.SetStateAction<any[]>>;
+  setCurrentNewIndex: React.Dispatch<React.SetStateAction<number>>;
+}) => {
+  const [isHovered, setIsHovered] = useState(false);
+
+  return (
+    <div className="flex flex-row items-start gap-2 px-4 group">
+      <div className="flex items-start justify-center pt-1">
+        <DropdownMenu open={isHovered}>
+          <DropdownMenuTrigger disabled={item.content === ""} asChild>
+            <button
+              disabled={item.content === ""}
+              className="flex items-center justify-center hover:bg-accent hover:text-accent-foreground rounded-sm p-1 transition-colors"
+              onClick={(e) => {
+                e.stopPropagation();
+              }}
+              onMouseEnter={() => setIsHovered(true)}
+              onMouseLeave={() => setIsHovered(false)}
+            >
+              {statusConfigs[item.status]?.icon || statusConfig.icon}
+            </button>
+          </DropdownMenuTrigger>
+          {item.content && (
+            <DropdownMenuContent align="start" side="left">
+              {Object.entries(statusConfigs).map(([status, config]) => (
+                <DropdownMenuItem
+                  key={status}
+                  onClick={() => {
+                    // Update the new resource status
+                    setNewResources((prev) => {
+                      const newItems = [...prev];
+                      newItems[index] = {
+                        ...newItems[index],
+                        status: status as Status,
+                      };
+                      return newItems;
+                    });
+                    // Also update the resource if it has content
+                    if (item.content) {
+                      updateResource.mutate({
+                        id: item.id,
+                        content: item.content,
+                        status: status as Status,
+                        order: item.order,
+                      });
+                    }
+                  }}
+                  className={item.status === status ? "bg-accent" : ""}
+                >
+                  <div className="flex items-center gap-2">
+                    {config.icon}
+                    <span>{config.label}</span>
+                  </div>
+                </DropdownMenuItem>
+              ))}
+              <DropdownMenuItem
+                key={"delete"}
+                onClick={() => {
+                  // Only delete from database if the resource has content (was saved)
+                  if (item.content) {
+                    deleteResource.mutate({ id: item.id });
+                  }
+                  setNewResources((prev) => prev.filter((_, i) => i !== index));
+                  setCurrentNewIndex((prev) => prev - 1);
+                }}
+                className={""}
+              >
+                <div className="flex items-center gap-2">
+                  <Trash2 className="w-4 h-4" />
+                  <span>Delete</span>
+                </div>
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          )}
+        </DropdownMenu>
+      </div>
+      <TiptapEditor
+        content={item.content}
+        onUpdate={(content) => {
+          handleUpdate(item.id, content);
+        }}
+        onBlur={() => {
+          setNewResources((prev) => {
+            const newItems = [...prev];
+            newItems.splice(index, 1);
+            return newItems;
+          });
+          setCurrentNewIndex((prev) => prev - 1);
+        }}
+        onFocus={() => setCurrentNewIndex(index + 1)}
       />
     </div>
   );
@@ -167,6 +297,12 @@ const StatusSection = ({
   });
 
   const updateOrder = trpc.resources.updateOrder.useMutation({
+    onSuccess: () => {
+      void utils.resources.list.invalidate();
+    },
+  });
+
+  const deleteResource = trpc.resources.delete.useMutation({
     onSuccess: () => {
       void utils.resources.list.invalidate();
     },
@@ -265,11 +401,11 @@ const StatusSection = ({
 
   return (
     <div className="flex flex-col gap-2 md:w-xl w-full text-left justify-start p-4">
-      <div className="my-1 py-1 px-4 flex items-center gap-1 text-muted-foreground bg-muted">
+      <div className="my-1 py-2 px-5 flex items-center text-muted-foreground bg-muted gap-4">
         {statusConfig.icon}
         <h1 className="text-lg font-bold">{statusConfig.label}</h1>
       </div>
-      <div className="flex flex-col gap-4">
+      <div className="flex flex-col gap-4 flex-1">
         <DndContext
           sensors={sensors}
           collisionDetection={closestCenter}
@@ -312,6 +448,12 @@ const StatusSection = ({
                       return newItems;
                     });
                   }}
+                  onDelete={() => {
+                    deleteResource.mutate({ id: item.id });
+                    setItems((prevItems) =>
+                      prevItems.filter((i) => i.id !== item.id)
+                    );
+                  }}
                   onBlur={() => handleBlur()}
                   onFocus={() => {}}
                 />
@@ -341,73 +483,18 @@ const StatusSection = ({
         {newResources.map((item, index) => {
           if (index <= currentNewIndex) {
             return (
-              <div
+              <NewResourceItem
                 key={item.id}
-                className="flex flex-row items-start gap-2 px-4 group"
-              >
-                <div className="flex items-start justify-center pt-1">
-                  <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                      <button
-                        className="flex items-center justify-center hover:bg-accent hover:text-accent-foreground rounded-sm p-1 transition-colors"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                        }}
-                      >
-                        {statusConfigs[item.status]?.icon || statusConfig.icon}
-                      </button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent align="start">
-                      {Object.entries(statusConfigs).map(([status, config]) => (
-                        <DropdownMenuItem
-                          key={status}
-                          onClick={() => {
-                            // Update the new resource status
-                            setNewResources((prev) => {
-                              const newItems = [...prev];
-                              newItems[index] = {
-                                ...newItems[index],
-                                status: status as Status,
-                              };
-                              return newItems;
-                            });
-                            // Also update the resource if it has content
-                            if (item.content) {
-                              updateResource.mutate({
-                                id: item.id,
-                                content: item.content,
-                                status: status as Status,
-                                order: item.order,
-                              });
-                            }
-                          }}
-                          className={item.status === status ? "bg-accent" : ""}
-                        >
-                          <div className="flex items-center gap-2">
-                            {config.icon}
-                            <span>{config.label}</span>
-                          </div>
-                        </DropdownMenuItem>
-                      ))}
-                    </DropdownMenuContent>
-                  </DropdownMenu>
-                </div>
-                <TiptapEditor
-                  content={item.content}
-                  onUpdate={(content) => {
-                    handleUpdate(item.id, content);
-                  }}
-                  onBlur={() => {
-                    setNewResources((prev) => {
-                      const newItems = [...prev];
-                      newItems.splice(index, 1);
-                      return newItems;
-                    });
-                    setCurrentNewIndex((prev) => prev - 1);
-                  }}
-                  onFocus={() => setCurrentNewIndex(index + 1)}
-                />
-              </div>
+                item={item}
+                index={index}
+                statusConfig={statusConfig}
+                statusConfigs={statusConfigs}
+                updateResource={updateResource}
+                deleteResource={deleteResource}
+                handleUpdate={handleUpdate}
+                setNewResources={setNewResources}
+                setCurrentNewIndex={setCurrentNewIndex}
+              />
             );
           } else {
             return null;

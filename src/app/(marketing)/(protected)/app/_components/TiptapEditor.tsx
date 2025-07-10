@@ -49,10 +49,14 @@ export const TiptapEditor = ({
     editorProps: {
       attributes: {
         class:
-          "w-96 px-3 min-h-[32px] border-b bg-transparent text-base focus:outline-none focus:ring-0 focus-visible:ring-0 cursor-text",
+          "w-full px-3 min-h-[32px] border-b bg-transparent text-base focus:outline-none focus:ring-0 focus-visible:ring-0 cursor-text",
       },
     },
   });
 
-  return <EditorContent editor={editor} />;
+  return (
+    <div className="flex-1">
+      <EditorContent editor={editor} />
+    </div>
+  );
 };
