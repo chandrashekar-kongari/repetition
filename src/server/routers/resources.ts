@@ -68,4 +68,35 @@ export const resourcesRouter = router({
       });
       return resource;
     }),
+
+  updateOrder: protectedProcedure
+    .input(
+      z.object({
+        updates: z.array(
+          z.object({
+            id: z.string(),
+            order: z.number(),
+          })
+        ),
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      const userEmail =
+        ctx.user.primaryEmail || ctx.user.displayName || "unknown";
+
+      // Update all resources in a transaction
+      await prisma.$transaction(
+        input.updates.map(({ id, order }) =>
+          prisma.resource.updateMany({
+            where: {
+              id,
+              email: userEmail,
+            },
+            data: { order },
+          })
+        )
+      );
+
+      return { success: true };
+    }),
 });
