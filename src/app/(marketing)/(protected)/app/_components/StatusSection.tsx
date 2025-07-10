@@ -20,7 +20,13 @@ import {
 } from "@dnd-kit/sortable";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-import { Circle, CircleDashedIcon, Disc2, Trash2 } from "lucide-react";
+import {
+  Circle,
+  CircleDashedIcon,
+  Disc2,
+  Trash2,
+  GripVertical,
+} from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -84,26 +90,33 @@ const SortableItem = ({
     zIndex: isDragging ? 1000 : 0,
   };
 
-  const [isHovered, setIsHovered] = useState(false);
-
   return (
     <div
       ref={setNodeRef}
       style={style}
-      className="flex flex-row items-start gap-2 px-4 group"
+      className="flex flex-row items-start gap-2 px-4 group relative"
     >
+      {/* Drag Handle - appears on hover without taking space */}
+      <button
+        className="absolute left-[-8px] top-1 flex items-center justify-center hover:bg-accent hover:text-accent-foreground rounded-sm p-1 transition-colors cursor-grab active:cursor-grabbing opacity-0 group-hover:opacity-100 z-10"
+        {...attributes}
+        {...listeners}
+        onClick={(e) => {
+          e.stopPropagation();
+        }}
+      >
+        <GripVertical className="w-4 h-4 text-muted-foreground" />
+      </button>
+
+      {/* Status Icon - always visible */}
       <div className="flex items-start justify-center pt-1">
-        <DropdownMenu open={isHovered && !isDragging}>
+        <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <button
-              className="flex items-center justify-center hover:bg-accent hover:text-accent-foreground rounded-sm p-1 transition-colors cursor-grab active:cursor-grabbing"
-              {...attributes}
-              {...listeners}
+              className="flex items-center justify-center hover:bg-accent hover:text-accent-foreground rounded-sm p-1 transition-colors"
               onClick={(e) => {
                 e.stopPropagation();
               }}
-              onMouseEnter={() => setIsHovered(true)}
-              onMouseLeave={() => setIsHovered(false)}
             >
               {icon}
             </button>
@@ -130,6 +143,7 @@ const SortableItem = ({
           </DropdownMenuContent>
         </DropdownMenu>
       </div>
+
       <TiptapEditor
         content={content}
         onUpdate={onUpdate}
@@ -184,12 +198,11 @@ const NewResourceItem = ({
   >;
   setCurrentNewIndex: React.Dispatch<React.SetStateAction<number>>;
 }) => {
-  const [isHovered, setIsHovered] = useState(false);
-
   return (
     <div className="flex flex-row items-start gap-2 px-4 group">
+      {/* Status Icon - always visible */}
       <div className="flex items-start justify-center pt-1">
-        <DropdownMenu open={isHovered}>
+        <DropdownMenu>
           <DropdownMenuTrigger disabled={item.content === ""} asChild>
             <button
               disabled={item.content === ""}
@@ -197,8 +210,6 @@ const NewResourceItem = ({
               onClick={(e) => {
                 e.stopPropagation();
               }}
-              onMouseEnter={() => setIsHovered(true)}
-              onMouseLeave={() => setIsHovered(false)}
             >
               {statusConfigs[item.status]?.icon || statusConfig.icon}
             </button>
