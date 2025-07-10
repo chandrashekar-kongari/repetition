@@ -84,10 +84,40 @@ const MainComponent = () => {
   // Handle loading state
   if (isLoading) {
     return (
-      <div className="flex items-center justify-center min-h-[400px]">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-32 w-32 border-b-2 mx-auto"></div>
-        </div>
+      <div className="flex flex-col items-center gap-4 w-full max-w-7xl mx-auto pt-10">
+        {/* Loading skeleton for three StatusSection components */}
+        {[1, 2, 3].map((sectionIndex) => (
+          <div
+            key={sectionIndex}
+            className="flex flex-col gap-2 md:w-xl w-full text-left justify-start p-4"
+          >
+            {/* Header skeleton */}
+            <div className="my-1 py-2 px-5 flex items-center bg-muted gap-4">
+              <div className="w-4 h-4 rounded-full bg-muted-foreground/20 animate-pulse"></div>
+              <div className="h-5 w-24 bg-muted-foreground/20 rounded animate-pulse"></div>
+            </div>
+
+            {/* Items skeleton */}
+            <div className="flex flex-col gap-4 flex-1">
+              {[1, 2, 3, 4, 5].map((itemIndex) => (
+                <div
+                  key={itemIndex}
+                  className="flex flex-row items-start gap-2 px-4"
+                >
+                  {/* Icon skeleton */}
+                  <div className="flex items-start justify-center pt-1">
+                    <div className="w-4 h-4 rounded-full bg-muted-foreground/20 animate-pulse"></div>
+                  </div>
+
+                  {/* Content skeleton */}
+                  <div className="flex-1 space-y-2">
+                    <div className="h-8 bg-muted-foreground/20 rounded animate-pulse"></div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        ))}
       </div>
     );
   }
