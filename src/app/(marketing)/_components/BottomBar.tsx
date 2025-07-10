@@ -1,10 +1,4 @@
 import { Button } from "@/_components/ui/button";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/_components/ui/dropdown-menu";
 
 const BottomBar = () => {
   return (

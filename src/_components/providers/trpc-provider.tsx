@@ -14,10 +14,13 @@ export function TRPCProvider({ children }: { children: React.ReactNode }) {
           queries: {
             staleTime: 60 * 1000, // 1 minute
             refetchOnWindowFocus: false,
-            retry: (failureCount, error: any) => {
+            retry: (failureCount, error: unknown) => {
               // Don't retry on 401 (unauthorized) errors
-              if (error?.data?.code === "UNAUTHORIZED") {
-                return false;
+              if (error && typeof error === "object" && "data" in error) {
+                const errorData = error.data as { code?: string };
+                if (errorData?.code === "UNAUTHORIZED") {
+                  return false;
+                }
               }
               return failureCount < 3;
             },
