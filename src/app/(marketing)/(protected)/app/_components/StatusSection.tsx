@@ -160,10 +160,28 @@ const NewResourceItem = ({
   index: number;
   statusConfig: { status: Status; icon: React.ReactNode };
   statusConfigs: Record<Status, { label: string; icon: React.ReactNode }>;
-  updateResource: any;
-  deleteResource: any;
+  updateResource: {
+    mutate: (params: {
+      id: string;
+      content: string;
+      status: Status;
+      order: number;
+    }) => void;
+  };
+  deleteResource: {
+    mutate: (params: { id: string }) => void;
+  };
   handleUpdate: (id: string, content: string) => void;
-  setNewResources: React.Dispatch<React.SetStateAction<any[]>>;
+  setNewResources: React.Dispatch<
+    React.SetStateAction<
+      {
+        id: string;
+        content: string;
+        status: Status;
+        order: number;
+      }[]
+    >
+  >;
   setCurrentNewIndex: React.Dispatch<React.SetStateAction<number>>;
 }) => {
   const [isHovered, setIsHovered] = useState(false);

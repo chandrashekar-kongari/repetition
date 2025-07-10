@@ -110,7 +110,7 @@ export const resourcesRouter = router({
       const userEmail =
         ctx.user.primaryEmail || ctx.user.displayName || "unknown";
 
-      const resource = await prisma.resource.updateMany({
+      await prisma.resource.updateMany({
         where: {
           id: input.id,
           email: userEmail,
