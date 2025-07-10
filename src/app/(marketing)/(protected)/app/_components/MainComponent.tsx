@@ -94,20 +94,11 @@ const MainComponent = () => {
 
   return (
     <div className="flex flex-col items-center gap-4 w-full max-w-7xl mx-auto pt-10">
-      <StatusSection
-        statusConfig={statusConfig.toRead}
-        _items={toRead || []}
-        showAddNew={true}
-      />
-      <StatusSection
-        statusConfig={statusConfig.reRead}
-        _items={reRead || []}
-        showAddNew={true}
-      />
+      <StatusSection statusConfig={statusConfig.toRead} _items={toRead || []} />
+      <StatusSection statusConfig={statusConfig.reRead} _items={reRead || []} />
       <StatusSection
         statusConfig={statusConfig.completed}
         _items={completed || []}
-        showAddNew={false}
       />
     </div>
   );
