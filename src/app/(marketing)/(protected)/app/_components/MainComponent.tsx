@@ -92,7 +92,7 @@ const MainComponent = () => {
             className="flex flex-col gap-2 md:w-xl w-full text-left justify-start p-4"
           >
             {/* Header skeleton */}
-            <div className="my-1 py-2 px-5 flex items-center bg-muted gap-4">
+            <div className="my-1 py-3 px-5 flex items-center bg-muted gap-4">
               <div className="w-4 h-4 rounded-full bg-muted-foreground/20 animate-pulse"></div>
               <div className="h-5 w-24 bg-muted-foreground/20 rounded animate-pulse"></div>
             </div>
@@ -111,7 +111,7 @@ const MainComponent = () => {
 
                   {/* Content skeleton */}
                   <div className="flex-1 space-y-2">
-                    <div className="h-8 bg-muted-foreground/20 rounded animate-pulse"></div>
+                    <div className="h-9 bg-muted-foreground/20 rounded animate-pulse"></div>
                   </div>
                 </div>
               ))}
