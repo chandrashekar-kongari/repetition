@@ -8,7 +8,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/_components/ui/dropdown-menu";
-import { Avatar, AvatarImage, AvatarFallback } from "@/_components/ui/avatar";
+import { Avatar, AvatarFallback } from "@/_components/ui/avatar";
 import { Button } from "@/_components/ui/button";
 import { Mail, LogOut, User2, MessageCircle } from "lucide-react";
 import { useUser } from "@stackframe/stack";

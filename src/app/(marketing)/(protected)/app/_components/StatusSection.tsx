@@ -261,14 +261,12 @@ const NewResourceItem = ({
 const StatusSection = ({
   statusConfig,
   _items,
-  showAddNew = true,
 }: {
   statusConfig: resource & {
     icon: React.ReactNode;
     label: string;
   };
   _items: resource[];
-  showAddNew?: boolean;
 }) => {
   const [items, setItems] = useState<resource[]>(_items);
   const utils = trpc.useUtils();
