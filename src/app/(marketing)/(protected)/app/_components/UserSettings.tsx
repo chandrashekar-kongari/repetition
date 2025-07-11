@@ -43,7 +43,12 @@ const UserSettings = () => {
           </span>
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
-        <DropdownMenuItem className="cursor-pointer">
+        <DropdownMenuItem
+          className="cursor-pointer"
+          onClick={() => {
+            window.open("https://tally.so/r/w505Ob", "_blank");
+          }}
+        >
           <MessageCircle className="w-4 h-4 mr-2" /> Contact Us
         </DropdownMenuItem>
         <DropdownMenuItem

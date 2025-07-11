@@ -7,22 +7,21 @@ const LeftCard = () => {
   return (
     <div className="flex flex-col gap-y-2 w-full">
       <p className="text-base sm:text-sm p-2 sm:p-3 px-3 sm:px-4 rounded-2xl border w-full sm:w-fit max-w-full">
-        Welcome to texts.run!
-      </p>
-      <p className="text-base sm:text-sm p-2 sm:p-3 px-3 sm:px-4 rounded-2xl border w-full sm:w-fit max-w-full">
-        The fastest way to launch a personal webpage.
+        Welcome to rread.it!
       </p>
 
       <p className="text-base sm:text-sm p-2 sm:p-3 px-3 sm:px-4 rounded-2xl border w-full sm:w-fit max-w-full">
-        your story in a familiar, easy-to-read format. No coding required, just
-        cool messenger-like bubbles. easy-to-read format. No coding required,
-        just cool messenger-like bubbles.
+        Too many apps overwhelm you with notifications, ads, and endless
+        features. We keep it minimal.
       </p>
       <p className="text-base sm:text-sm p-2 sm:p-3 px-3 sm:px-4 rounded-2xl border w-full sm:w-fit max-w-full">
-        youad format. No coding required, just cool messenger-like bubbles.
+        We believe reading should be simple, focused, and high-quality.
       </p>
       <p className="text-base sm:text-sm p-2 sm:p-3 px-3 sm:px-4 rounded-2xl border w-full sm:w-fit max-w-full">
-        Just write your story and your site is live.
+        Every detail protects your focus, because your attention is priceless.
+      </p>
+      <p className="text-base sm:text-sm p-2 sm:p-3 px-3 sm:px-4 rounded-2xl border w-full sm:w-fit max-w-full">
+        Start building your reading list today.
       </p>
 
       <div className="p-1">
