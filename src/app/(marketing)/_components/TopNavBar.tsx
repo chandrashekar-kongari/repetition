@@ -9,14 +9,22 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/_components/ui/dropdown-menu";
+import Image from "next/image";
 
 const TopNavBar = () => {
   const app = useStackApp();
   return (
     <div className="flex items-center justify-between border-b mx-auto p-4 sticky top-0 z-50">
       <div className="flex items-center justify-between w-full max-w-7xl mx-auto">
-        <div className="flex items-center gap-x-2">
-          <span className="text-lg font-semibold">Repetition</span>
+        <div className="flex items-end">
+          <Image
+            src="/logo9.svg"
+            alt="rread.it"
+            width={24}
+            height={24}
+            className="w-6 h-6"
+          />
+          <span className="text-lg font-semibold leading-none">read.it</span>
         </div>
 
         {/* Desktop Navigation */}

@@ -17,9 +17,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Task Manager - Next.js with tRPC",
-  description:
-    "A modern task management app built with Next.js, tRPC, Prisma, and Neon",
+  title: "rread.it",
+  description: "Your high quality reading list.",
 };
 
 export default function RootLayout({
@@ -31,11 +30,15 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      ><StackProvider app={stackServerApp}><StackTheme>
-        <ThemeProvider>
-          <TRPCProvider>{children}</TRPCProvider>
-        </ThemeProvider>
-      </StackTheme></StackProvider></body>
+      >
+        <StackProvider app={stackServerApp}>
+          <StackTheme>
+            <ThemeProvider>
+              <TRPCProvider>{children}</TRPCProvider>
+            </ThemeProvider>
+          </StackTheme>
+        </StackProvider>
+      </body>
     </html>
   );
 }
