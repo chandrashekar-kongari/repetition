@@ -24,7 +24,7 @@ const TopNavBar = () => {
             height={24}
             className="w-6 h-6"
           />
-          <span className="text-lg font-semibold leading-none">read.it</span>
+          <span className="text-lg font-semibold leading-none">read.app</span>
         </div>
 
         {/* Desktop Navigation */}
