@@ -19,7 +19,7 @@ const TopNavBar = () => {
         <div className="flex items-end">
           <Image
             src="/logo9.svg"
-            alt="rread.it"
+            alt="rread.app"
             width={24}
             height={24}
             className="w-6 h-6"

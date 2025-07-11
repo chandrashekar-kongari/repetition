@@ -7,7 +7,7 @@ const LeftCard = () => {
   return (
     <div className="flex flex-col gap-y-2 w-full">
       <p className="text-base sm:text-sm p-2 sm:p-3 px-3 sm:px-4 rounded-2xl border w-full sm:w-fit max-w-full">
-        Welcome to rread.it!
+        Welcome to rread.app!
       </p>
 
       <p className="text-base sm:text-sm p-2 sm:p-3 px-3 sm:px-4 rounded-2xl border w-full sm:w-fit max-w-full">

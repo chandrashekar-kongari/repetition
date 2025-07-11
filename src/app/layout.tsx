@@ -17,7 +17,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "rread.it",
+  title: "rread.app",
   description: "Your high quality reading list.",
 };
 
